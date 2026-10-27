@@ -1,7 +1,7 @@
 {
-  "name": "apparatus",
+  "name": "apparatus-nextgen",
   "description": "various machine learning routines for node",
-  "version": "0.0.11",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/NaturalNode/apparatus"
@@ -23,7 +23,7 @@
     "lint": "standard",
     "lint:fix": "standard --fix"
   },
-  "author": "Chris Umbel <chris@chrisumbel.com>",
+  "author": "Chris Umbel <chris@chrisumbel.com>, Hugo W.L. ter Doest <hwl.ter.doest@gmail.com>",
   "keywords": [
     "machine",
     "learning",
@@ -39,9 +39,8 @@
   "types": "./index.d.ts",
   "maintainers": [
     {
-      "name": "Chris Umbel",
-      "email": "chris@chrisumbel.com",
-      "web": "http://www.chrisumbel.com"
+      "name": "Hugo W.L. ter Doest",
+      "email": "hwl.ter.doest@gmail.com"
     }
   ]
 }

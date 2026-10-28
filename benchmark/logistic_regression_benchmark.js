@@ -1,11 +1,10 @@
 /*
 Benchmark comparing Logistic Regression Classifier implementations
-Original (Sylvester-based) vs Modernized (direct array manipulation)
+Modernized (direct array manipulation)
 */
 
 'use strict'
 
-const LogisticRegressionLegacy = require('../lib/apparatus/classifier/logistic-regression-legacy')
 const LogisticRegressionModernized = require('../lib/apparatus/classifier/logistic-regression-modernized')
 
 /**
@@ -142,18 +141,6 @@ function runBenchmark () {
     console.log(`Training samples: ${trainData.length}, Test samples: ${testData.length}`)
     console.log()
 
-    // Benchmark legacy (Sylvester)
-    console.log('Legacy Classifier (Sylvester):')
-    const legacyTrain = benchmarkTraining(LogisticRegressionLegacy, trainData, 'Legacy')
-    console.log(`  Training time:  ${legacyTrain.trainingTime} ms`)
-    console.log(`  Memory used:    ${legacyTrain.memoryUsed} MB`)
-
-    const legacyClass = benchmarkClassification(legacyTrain.classifier, testData, 'Legacy')
-    console.log(`  Classification time: ${legacyClass.classificationTime} ms (${testData.length} samples)`)
-    console.log(`  Memory used:         ${legacyClass.memoryUsed} MB`)
-    console.log(`  Accuracy:           ${legacyClass.accuracy}%`)
-    console.log()
-
     // Benchmark modernized
     console.log('Modernized Classifier (Direct arrays):')
     const modernTrain = benchmarkTraining(LogisticRegressionModernized, trainData, 'Modernized')
@@ -165,18 +152,6 @@ function runBenchmark () {
     console.log(`  Memory used:         ${modernClass.memoryUsed} MB`)
     console.log(`  Accuracy:           ${modernClass.accuracy}%`)
     console.log()
-
-    // Calculate improvements
-    const speedupTrain = Math.round((legacyTrain.trainingTime / modernTrain.trainingTime) * 100) / 100
-    const speedupClass = Math.round((legacyClass.classificationTime / modernClass.classificationTime) * 100) / 100
-    const memSavingsTrain = Math.round((legacyTrain.memoryUsed - modernTrain.memoryUsed) * 100) / 100
-    const memSavingsClass = Math.round((legacyClass.memoryUsed - modernClass.memoryUsed) * 100) / 100
-
-    console.log('IMPROVEMENTS (Modernized vs Legacy):')
-    console.log(`  Training speedup:        ${speedupTrain}x faster`)
-    console.log(`  Classification speedup:  ${speedupClass}x faster`)
-    console.log(`  Training memory saving:  ${memSavingsTrain} MB (${Math.round((memSavingsTrain / Math.abs(legacyTrain.memoryUsed)) * 100)}%)`)
-    console.log(`  Classification memory saving: ${memSavingsClass} MB (${Math.round((memSavingsClass / Math.abs(legacyClass.memoryUsed)) * 100)}%)`)
   }
 
   console.log()

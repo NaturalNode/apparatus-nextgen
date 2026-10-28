@@ -273,11 +273,6 @@ Where:
 
 #### Variants in Apparatus
 
-**Legacy Implementation (kmeans-legacy.js):**
-- Uses Sylvester matrix library
-- Implemented circa 2011
-- Slower but foundational
-
 **Modernized Implementation (kmeans-modernized.js):**
 - Pure JavaScript arrays (no external dependencies)
 - K-means++ initialization (better starting points)

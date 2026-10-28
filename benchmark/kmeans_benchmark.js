@@ -1,9 +1,8 @@
 /*
 K-Means Performance Benchmark
-Comparing legacy (Sylvester-based) vs modernized implementations
+Modernized implementation
 */
 
-const KMeansLegacy = require('../lib/apparatus/clusterer/kmeans-legacy')
 const KMeansModernized = require('../lib/apparatus/clusterer/kmeans-modernized')
 
 // Generate random dataset
@@ -75,31 +74,8 @@ function runBenchmark (datasetName, data, k, iterations = 5) {
   console.log(`Iterations: ${iterations}`)
   console.log('='.repeat(60))
 
-  // Warm up
-  try {
-    new KMeansLegacy(data).cluster(k)
-  } catch (e) {
-    console.log('Legacy warmup failed (expected if Sylvester not installed)')
-  }
-
   const kmeansModern = new KMeansModernized(k)
   kmeansModern.fit(data)
-
-  // Benchmark Legacy
-  let legacyResult
-  try {
-    legacyResult = benchmark('KMeans Legacy', () => {
-      const kmeans = new KMeansLegacy(data)
-      return kmeans.cluster(k)
-    }, iterations)
-  } catch (error) {
-    legacyResult = {
-      name: 'KMeans Legacy',
-      duration: null,
-      memory: null,
-      error: error.message
-    }
-  }
 
   // Benchmark Modernized
   const modernizedResult = benchmark('KMeans Modernized', () => {
@@ -112,28 +88,9 @@ function runBenchmark (datasetName, data, k, iterations = 5) {
   console.log('\nResults:')
   console.log('-'.repeat(60))
 
-  if (legacyResult.error) {
-    console.log(`Legacy:      ERROR - ${legacyResult.error}`)
-  } else {
-    console.log(`Legacy:      ${legacyResult.duration.toFixed(2)} ms, Memory: ${legacyResult.memory.toFixed(2)} MB`)
-  }
-
   console.log(`Modernized:  ${modernizedResult.duration.toFixed(2)} ms, Memory: ${modernizedResult.memory.toFixed(2)} MB`)
 
-  if (!legacyResult.error) {
-    const speedup = (legacyResult.duration / modernizedResult.duration).toFixed(2)
-    const faster = speedup > 1 ? 'Modernized' : 'Legacy'
-    const ratio = speedup > 1 ? speedup : (1 / speedup).toFixed(2)
-
-    const memDiff = modernizedResult.memory - legacyResult.memory
-    const memComparison = memDiff < 0
-      ? `${Math.abs(memDiff).toFixed(2)} MB less memory`
-      : `${memDiff.toFixed(2)} MB more memory`
-
-    console.log(`\nComparison:  ${faster} is ${ratio}x faster, ${memComparison}`)
-  }
-
-  return { legacy: legacyResult, modernized: modernizedResult }
+  return { modernized: modernizedResult }
 }
 
 // Main benchmark suite
@@ -172,50 +129,29 @@ console.log('\n' + '='.repeat(60))
 console.log('SUMMARY')
 console.log('='.repeat(60))
 
-let modernizedWins = 0
-let totalSpeedup = 0
-let totalMemoryLegacy = 0
-let totalMemoryModernized = 0
-let validComparisons = 0
+let totalDuration = 0
+let totalMemory = 0
+let count = 0
 
 results.forEach((r, i) => {
-  if (!r.legacy.error && r.modernized.duration > 0) {
-    const speedup = r.legacy.duration / r.modernized.duration
-    if (speedup > 1) {
-      modernizedWins++
-    }
-    totalSpeedup += speedup
-    totalMemoryLegacy += Math.abs(r.legacy.memory)
-    totalMemoryModernized += Math.abs(r.modernized.memory)
-    validComparisons++
+  if (r.modernized.duration > 0) {
+    totalDuration += r.modernized.duration
+    totalMemory += Math.abs(r.modernized.memory)
+    count++
   }
 })
 
-if (validComparisons > 0) {
-  const avgSpeedup = (totalSpeedup / validComparisons).toFixed(2)
-  const avgMemLegacy = (totalMemoryLegacy / validComparisons).toFixed(2)
-  const avgMemModernized = (totalMemoryModernized / validComparisons).toFixed(2)
+if (count > 0) {
+  const avgDuration = (totalDuration / count).toFixed(2)
+  const avgMemory = (totalMemory / count).toFixed(2)
 
   console.log('\nPerformance:')
-  console.log(`  Modernized won ${modernizedWins}/${validComparisons} benchmarks`)
-  console.log(`  Average speedup: ${avgSpeedup}x faster`)
+  console.log(`  Benchmarks completed: ${count}`)
+  console.log(`  Average duration: ${avgDuration} ms`)
 
   console.log('\nMemory Usage (average absolute delta):')
-  console.log(`  Legacy:      ${avgMemLegacy} MB`)
-  console.log(`  Modernized:  ${avgMemModernized} MB`)
-
-  if (totalMemoryModernized < totalMemoryLegacy) {
-    const memSavings = ((1 - totalMemoryModernized / totalMemoryLegacy) * 100).toFixed(1)
-    console.log(`  Modernized uses ${memSavings}% less memory on average`)
-  } else {
-    const memIncrease = ((totalMemoryModernized / totalMemoryLegacy - 1) * 100).toFixed(1)
-    console.log(`  Modernized uses ${memIncrease}% more memory on average`)
-  }
-
-  console.log(`\nOverall: Modernized is ${avgSpeedup}x faster`)
+  console.log(`  Modernized:  ${avgMemory} MB`)
 } else {
-  console.log('Legacy implementation requires Sylvester library to be installed.')
-  console.log('Install with: npm install sylvester')
   console.log('\nModernized implementation:')
   results.forEach((r, i) => {
     console.log(`  Test ${i + 1}: ${r.modernized.duration.toFixed(2)} ms (${r.modernized.memory.toFixed(2)} MB)`)

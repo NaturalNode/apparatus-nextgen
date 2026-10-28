@@ -24,7 +24,6 @@ THE SOFTWARE.
  * Logistic Regression Classifier
  * 
  * This module exports the modernized Logistic Regression Classifier.
- * For the legacy implementation, use logistic-regression-legacy.
  */
 export { LogisticRegressionModernized as default } from './logistic-regression-modernized'
 export { LogisticRegressionModernized } from './logistic-regression-modernized'

@@ -38,13 +38,13 @@ export interface KMeansOptions {
 
 /**
  * KMeansModernized - Modern K-Means clustering implementation
- * 
+ *
  * Advanced features:
  * - K-means++ initialization (better than random)
  * - Multiple restarts with best result selection
  * - Deterministic seeding for reproducibility
  * - Tolerance-based convergence
- * 
+ *
  * Usage:
  *   const kmeans = new KMeansModernized(3, { restarts: 10 });
  *   kmeans.fit(data);

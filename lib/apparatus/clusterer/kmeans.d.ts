@@ -21,26 +21,28 @@ THE SOFTWARE.
 */
 
 /*
-Backwards compatibility wrapper for the original Apparatus KMeans API
+KMeans - Original Apparatus API wrapper
 
-This module provides the original Apparatus API for K-Means clustering.
-The implementation uses the modernized KMeans internally.
-
-For the modern API with additional features, see kmeans-modernized.d.ts
+Extends KMeansModernized to provide backward-compatible API:
+  new KMeans(observations)
+  kmeans.cluster(k)
+  kmeans.createCentroids(k)
+  kmeans.distanceFrom(centroids)
 */
 
 import { VectorLike } from './vector-like'
+import { KMeansModernized } from './kmeans-modernized'
 
 /**
  * KMeans - Original Apparatus API
- * 
+ *
  * Supports the old Apparatus API:
  *   new KMeans(observations)
  *   kmeans.cluster(k)
  *   kmeans.createCentroids(k)
  *   kmeans.distanceFrom(centroids)
  */
-export class KMeans {
+export class KMeans extends KMeansModernized {
   Observations: number[][]
 
   /**
@@ -70,4 +72,3 @@ export class KMeans {
    */
   distanceFrom (centroids: number[][]): number[][]
 }
-

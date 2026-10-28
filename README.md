@@ -273,10 +273,18 @@ Where:
 
 #### Variants in Apparatus
 
-**Modernized Implementation (kmeans-modernized.js):**
+**KMeans (kmeans.js) — Original Apparatus API (backwards compatible):**
+- `new KMeans(observations)` constructor
+- `kmeans.cluster(k)` returns Sylvester-compatible VectorLike object
+- Use this if you need the legacy Apparatus API
+
+**KMeansModernized (kmeans-modernized.js) — Modernized Implementation:**
 - Pure JavaScript arrays (no external dependencies)
 - K-means++ initialization (better starting points)
 - Multiple restart support (finds better solutions)
+- Deterministic seeding for reproducibility
+- Tolerance-based convergence
+- `predict()` for new data points
 - **7.6x faster** than legacy (see benchmark)
 - Thread-safe and scalable
 
@@ -293,7 +301,7 @@ Instead of random centroids, k-means++ selects initial centers probabilistically
 #### Example
 
 ```javascript
-// Modernized version (recommended)
+// Legacy API (backwards compatible)
 const KMeans = require('./lib/apparatus/clusterer/kmeans');
 
 const data = [
@@ -303,7 +311,6 @@ const data = [
   [11, 11]
 ];
 
-// Legacy API (backwards compatible)
 const kmeans = new KMeans(data);
 const result = kmeans.cluster(2);
 
@@ -422,6 +429,6 @@ console.log(result.elements); // [1, 1, 2]
 
 ---
 
-**Last Updated:** February 24, 2026  
-**Apparatus Version:** 0.0.11
+**Last Updated:** October 28, 2026  
+**Apparatus Nextgen Version:** 0.0.1
 
